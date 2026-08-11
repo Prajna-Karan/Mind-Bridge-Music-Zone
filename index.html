@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Music Zone 🎵</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Yeseva+One&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cc:#a78bfa; --mc:#f9a8d4;
+  --bg1:#0f0c29; --bg2:#302b63; --bg3:#24243e;
+  --glass:rgba(255,255,255,0.055); --glass-b:rgba(255,255,255,0.11);
+  --r:22px; --tr:0.55s cubic-bezier(.4,0,.2,1);
+  --fD:'Yeseva One',serif;
+  --fH:'Bebas Neue',cursive;
+  --fB:'Plus Jakarta Sans',sans-serif;
+  --fS:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fB);min-height:100vh;color:#fff;
+  background:linear-gradient(145deg,var(--bg1) 0%,var(--bg2) 55%,var(--bg3) 100%);
+  transition:background var(--tr);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;transition:background var(--tr);}
+.orb1{width:580px;height:580px;top:-170px;left:-170px;background:var(--cc);filter:blur(110px);opacity:.18;animation:drift 15s ease-in-out infinite alternate;}
+.orb2{width:430px;height:430px;bottom:-120px;right:-100px;background:var(--mc);filter:blur(100px);opacity:.17;animation:drift 20s ease-in-out infinite alternate-reverse;}
+.orb3{width:250px;height:250px;top:42%;left:52%;background:var(--mc);filter:blur(80px);opacity:.07;animation:drift 25s ease-in-out infinite alternate;}
+@keyframes drift{from{transform:translate(0,0) scale(1);}to{transform:translate(48px,32px) scale(1.1);}}
+.page{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:50px 22px 100px;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:54px;animation:fadeDown .8s ease both;}
+.header-top{font-family:var(--fS);font-size:11px;letter-spacing:4px;color:var(--mc);opacity:.85;margin-bottom:12px;text-transform:uppercase;text-shadow:0 0 24px color-mix(in srgb,var(--mc) 70%,transparent);transition:color var(--tr),text-shadow var(--tr);}
+.header h1{font-family:var(--fD);font-size:clamp(40px,9vw,88px);line-height:.98;letter-spacing:-1px;background:linear-gradient(120deg,#fff 0%,var(--cc) 42%,var(--mc) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 22px color-mix(in srgb,var(--cc) 38%,transparent));transition:filter var(--tr);}
+.header-sub{margin-top:14px;font-family:var(--fB);font-size:12px;font-weight:500;letter-spacing:5px;text-transform:uppercase;opacity:.35;}
+.header-rule{display:flex;align-items:center;gap:10px;width:180px;margin:18px auto 0;}
+.header-rule span{flex:1;height:1px;}
+.header-rule span:first-child{background:linear-gradient(90deg,transparent,var(--cc));}
+.header-rule span:last-child{background:linear-gradient(270deg,transparent,var(--mc));}
+.header-rule em{font-family:var(--fD);font-style:normal;font-size:22px;color:var(--mc);transition:color var(--tr);}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-26px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARD */
+.card{background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--glass-b);border-radius:var(--r);padding:28px 30px;margin-bottom:20px;animation:fadeUp .5s ease both;position:relative;overflow:hidden;}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);}
+.card-label{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.card-label-dot{width:9px;height:9px;border-radius:50%;background:var(--cc);box-shadow:0 0 10px var(--cc);flex-shrink:0;transition:background var(--tr),box-shadow var(--tr);}
+.card-label-text{font-family:var(--fD);font-size:19px;opacity:.55;letter-spacing:.3px;}
+.card-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.1),transparent);}
+
+/* CONDITION BUTTONS */
+.cond-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+@media(min-width:520px){.cond-grid{grid-template-columns:repeat(4,1fr);}}
+.cond-btn{position:relative;overflow:hidden;padding:22px 10px 16px;border-radius:18px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;transition:.3s cubic-bezier(.4,0,.2,1);text-align:center;}
+.cond-btn[data-c="ADHD"]{--c:#ff7043;}
+.cond-btn[data-c="Autism"]{--c:#26c6da;}
+.cond-btn[data-c="Dyslexia"]{--c:#ab47bc;}
+.cond-btn[data-c="Dyscalculia"]{--c:#00e676;}
+.cond-icon{display:block;font-size:30px;margin-bottom:7px;transition:transform .3s;}
+.cond-name{font-family:var(--fH);font-size:22px;letter-spacing:2px;display:block;}
+.cond-sub{font-family:var(--fS);font-size:9px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;opacity:.4;margin-top:3px;display:block;}
+.cond-btn:hover{background:rgba(255,255,255,.13);border-color:var(--c);transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.3),0 0 22px color-mix(in srgb,var(--c) 35%,transparent);}
+.cond-btn:hover .cond-icon{transform:scale(1.25) rotate(-6deg);}
+.cond-btn.active{background:linear-gradient(140deg,color-mix(in srgb,var(--c) 32%,transparent),color-mix(in srgb,var(--c) 10%,transparent));border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent),0 10px 34px rgba(0,0,0,.35);transform:translateY(-2px);}
+.cond-btn.active .cond-name{color:var(--c);text-shadow:0 0 14px color-mix(in srgb,var(--c) 65%,transparent);}
+
+/* MOOD BUTTONS */
+.mood-grid{display:flex;flex-wrap:wrap;gap:12px;}
+.mood-btn{flex:1;min-width:110px;padding:18px 12px;border-radius:16px;border:2px solid rgba(255,255,255,.09);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;transition:.3s cubic-bezier(.4,0,.2,1);text-align:center;}
+.mood-icon{display:block;font-size:22px;margin-bottom:5px;transition:transform .3s;}
+.mood-name{font-family:var(--fH);font-size:20px;letter-spacing:2px;display:block;}
+.mood-btn:hover{background:rgba(255,255,255,.13);border-color:var(--m);transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.28),0 0 18px color-mix(in srgb,var(--m) 38%,transparent);}
+.mood-btn:hover .mood-icon{transform:scale(1.2);}
+.mood-btn.active{background:linear-gradient(140deg,color-mix(in srgb,var(--m) 36%,transparent),color-mix(in srgb,var(--m) 12%,transparent));border-color:var(--m);box-shadow:0 0 0 3px color-mix(in srgb,var(--m) 22%,transparent),0 8px 32px rgba(0,0,0,.35);transform:translateY(-2px);}
+.mood-btn.active .mood-name{color:var(--m);text-shadow:0 0 10px color-mix(in srgb,var(--m) 60%,transparent);}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:7px 20px;border-radius:40px;font-family:var(--fS);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;border:1.5px solid var(--bc,rgba(255,255,255,.18));background:color-mix(in srgb,var(--bc,white) 10%,transparent);color:var(--bc,white);transition:all var(--tr);}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 7px currentColor;}
+
+/* SELECTS */
+.styled-select{width:100%;padding:13px 18px;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;color:#fff;font-family:var(--fB);font-size:14px;font-weight:600;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:12px;transition:.25s;margin-bottom:12px;}
+.styled-select:focus{border-color:var(--mc);box-shadow:0 0 0 3px color-mix(in srgb,var(--mc) 18%,transparent);}
+.styled-select option{background:#12112a;color:#fff;}
+.select-row{display:flex;gap:12px;flex-wrap:wrap;}
+.select-row .styled-select{flex:1;min-width:160px;margin-bottom:0;}
+
+/* PLAYER */
+#playerWrap{margin-top:20px;display:none;}
+.yt-card{border-radius:18px;overflow:hidden;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.09);box-shadow:0 22px 60px rgba(0,0,0,.5);}
+.yt-thumb{position:relative;width:100%;aspect-ratio:16/9;cursor:pointer;overflow:hidden;display:block;}
+.yt-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s,filter .35s;filter:brightness(.88) saturate(1.1);}
+.yt-thumb:hover img{transform:scale(1.04);filter:brightness(1) saturate(1.2);}
+.yt-play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.28);transition:.3s;}
+.yt-thumb:hover .yt-play-btn{background:rgba(0,0,0,.08);}
+.play-circle{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.13);backdrop-filter:blur(10px);border:2.5px solid rgba(255,255,255,.48);display:flex;align-items:center;justify-content:center;transition:.3s;box-shadow:0 8px 30px rgba(0,0,0,.4);}
+.yt-thumb:hover .play-circle{background:rgba(255,0,0,.88);border-color:#f00;transform:scale(1.1);box-shadow:0 0 30px rgba(255,0,0,.55);}
+.play-circle svg{width:30px;height:30px;margin-left:5px;}
+.yt-info{padding:16px 20px 12px;}
+.yt-info-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.yt-title-wrap{display:flex;flex-direction:column;gap:2px;}
+.yt-now{font-family:var(--fS);font-size:10px;font-weight:400;letter-spacing:2.5px;text-transform:uppercase;opacity:.4;}
+.yt-title{font-family:var(--fB);font-size:15px;font-weight:700;opacity:.9;line-height:1.3;}
+.yt-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+.yt-open-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;background:linear-gradient(135deg,#FF0000,#c50000);color:#fff;font-family:var(--fS);font-size:10px;font-weight:500;border-radius:30px;text-decoration:none;transition:.25s;white-space:nowrap;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 16px rgba(255,0,0,.32);flex-shrink:0;}
+.yt-open-btn:hover{transform:scale(1.05) translateY(-1px);box-shadow:0 8px 24px rgba(255,0,0,.55);}
+.yt-note{font-family:var(--fS);font-size:11px;font-style:italic;opacity:.3;margin-top:8px;letter-spacing:.5px;}
+.yt-iframe-wrap{position:relative;width:100%;aspect-ratio:16/9;}
+.yt-iframe-wrap iframe{width:100%;height:100%;border:none;display:block;}
+
+/* TIMER */
+.timer-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;}
+.timer-input{width:88px;padding:12px 14px;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.16);border-radius:14px;color:#fff;font-family:var(--fH);font-size:26px;letter-spacing:2px;outline:none;text-align:center;transition:.25s;}
+.timer-input:focus{border-color:var(--cc);box-shadow:0 0 0 3px color-mix(in srgb,var(--cc) 20%,transparent);}
+.timer-btn{flex:1;padding:13px 16px;border:none;border-radius:14px;font-family:var(--fB);font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.5px;transition:.3s cubic-bezier(.4,0,.2,1);min-width:90px;}
+.btn-start{background:linear-gradient(135deg,var(--cc),color-mix(in srgb,var(--cc) 65%,var(--mc)));color:#000;font-weight:700;box-shadow:0 4px 20px color-mix(in srgb,var(--cc) 42%,transparent);transition:background var(--tr),box-shadow var(--tr);}
+.btn-pause{background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.2);color:#fff;}
+.btn-resume{background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.2);color:#fff;}
+.timer-btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.35);filter:brightness(1.12);}
+.timer-btn:disabled{opacity:.28;cursor:not-allowed;transform:none;filter:none;box-shadow:none;}
+.progress-wrap{position:relative;width:210px;height:210px;margin:0 auto 14px;}
+.progress-wrap svg{transform:rotate(-90deg);filter:drop-shadow(0 0 16px color-mix(in srgb,var(--mc) 42%,transparent));transition:filter var(--tr);}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.07);stroke-width:10;}
+.ring-fill{fill:none;stroke:url(#rg);stroke-width:10;stroke-linecap:round;stroke-dasharray:565;stroke-dashoffset:565;transition:stroke-dashoffset .9s ease;}
+.ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.ring-num{font-family:var(--fH);font-size:48px;line-height:1;letter-spacing:4px;}
+.ring-lbl{font-family:var(--fS);font-size:10px;font-weight:400;opacity:.4;letter-spacing:3px;text-transform:uppercase;}
+.status-pill{display:block;text-align:center;margin-top:12px;font-family:var(--fS);font-size:12px;font-style:italic;opacity:.55;letter-spacing:1px;}
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="page">
+
+  <div class="header"> 
+    <h1>Music Zone</h1>
+    <div class="header-sub">Sound &nbsp;·&nbsp; Focus &nbsp;·&nbsp; Flow</div>
+    <div class="header-rule"><span></span><em>♪</em><span></span></div>
+  </div>
+
+  <div class="card" style="animation-delay:.05s">
+    <div class="card-label">
+      <span class="card-label-dot"></span>
+      <span class="card-label-text">Select your condition</span>
+    </div>
+    <div class="cond-grid">
+      <button class="cond-btn" data-c="ADHD" onclick="setCondition('ADHD',this)">
+        <span class="cond-icon">⚡</span><span class="cond-name">ADHD</span><span class="cond-sub">attention</span>
+      </button>
+      <button class="cond-btn" data-c="Autism" onclick="setCondition('Autism',this)">
+        <span class="cond-icon">🌊</span><span class="cond-name">Autism</span><span class="cond-sub">spectrum</span>
+      </button>
+      <button class="cond-btn" data-c="Dyslexia" onclick="setCondition('Dyslexia',this)">
+        <span class="cond-icon">📖</span><span class="cond-name">Dyslexia</span><span class="cond-sub">reading</span>
+      </button>
+      <button class="cond-btn" data-c="Dyscalculia" onclick="setCondition('Dyscalculia',this)">
+        <span class="cond-icon">🔢</span><span class="cond-name">Dyscalculia</span><span class="cond-sub">numbers</span>
+      </button>
+    </div>
+    <div id="condBadgeWrap" class="hidden">
+      <div class="badge" id="condBadge"><span class="badge-dot"></span><span id="condBadgeTxt"></span></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="moodCard" style="animation-delay:.13s">
+    <div class="card-label">
+      <span class="card-label-dot"></span>
+      <span class="card-label-text">How are you feeling?</span>
+    </div>
+    <div class="mood-grid" id="moodGrid"></div>
+    <div id="moodBadgeWrap" class="hidden">
+      <div class="badge" id="moodBadge"><span class="badge-dot"></span><span id="moodBadgeTxt"></span></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="musicCard" style="animation-delay:.20s">
+    <div class="card-label">
+      <span class="card-label-dot"></span>
+      <span class="card-label-text">Choose your music</span>
+    </div>
+    <div class="select-row">
+      <select class="styled-select" id="sectionSelect" onchange="loadTracks()"></select>
+      <select class="styled-select" id="trackSelect"   onchange="queueVideo()"></select>
+    </div>
+    <div id="playerWrap"><div class="yt-card" id="ytCard"></div></div>
+  </div>
+
+  <div class="card" style="animation-delay:.27s">
+    <div class="card-label">
+      <span class="card-label-dot"></span>
+      <span class="card-label-text">Study timer</span>
+    </div>
+    <div class="timer-controls">
+      <input class="timer-input" type="number" id="minutesInput" value="25" min="1" max="180">
+      <button class="timer-btn btn-start"  onclick="startTimer()">▶ Start</button>
+      <button class="timer-btn btn-pause"  onclick="pauseTimer()"  id="btnPause"  disabled>⏸ Pause</button>
+      <button class="timer-btn btn-resume" onclick="resumeTimer()" id="btnResume" disabled>↩ Resume</button>
+    </div>
+    <div class="progress-wrap">
+      <svg width="210" height="210" viewBox="0 0 210 210">
+        <defs>
+          <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   id="rg0" stop-color="#a78bfa"/>
+            <stop offset="100%" id="rg1" stop-color="#f9a8d4"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg"   cx="105" cy="105" r="90"/>
+        <circle class="ring-fill" cx="105" cy="105" r="90" id="ringFill"/>
+      </svg>
+      <div class="ring-inner">
+        <span class="ring-num" id="ringNum">00:00</span>
+        <span class="ring-lbl">remaining</span>
+      </div>
+    </div>
+    <span class="status-pill" id="statusPill">Not started</span>
+  </div>
+
+</div>
+<script>
+const THEME={
+  ADHD:{
+    color:'#ff7043', bg:['#1a0800','#3b1500','#1a0900'],
+    moods:{
+      Focus:        {color:'#ffd600',icon:'🎯',bg:['#1a1400','#3a2e00','#191300']},
+      Motivation:   {color:'#ff6d00',icon:'🚀',bg:['#1a0800','#3d1800','#180700']},
+      'Low Energy': {color:'#ffccbc',icon:'🌙',bg:['#1a1210','#2e2020','#181010']}
+    }
+  },
+  Autism:{
+    color:'#26c6da', bg:['#001a1f','#003d4d','#001820'],
+    moods:{
+      Relax:        {color:'#80deea',icon:'🌿',bg:['#001820','#003a42','#001618']},
+      'Low Energy': {color:'#b3e5fc',icon:'🌸',bg:['#001420','#002845','#001020']},
+      Focus:        {color:'#00e5ff',icon:'🔬',bg:['#001a1c','#003c40','#001618']}
+    }
+  },
+  Dyslexia:{
+    color:'#ab47bc', bg:['#120020','#2d0050','#100018'],
+    moods:{
+      Focus:        {color:'#ce93d8',icon:'💡',bg:['#160022','#340050','#130020']},
+      Relax:        {color:'#f3e5f5',icon:'🫧',bg:['#100020','#280048','#0f001e']},
+      Motivation:   {color:'#ea80fc',icon:'✨',bg:['#18001e','#3c0048','#160018']}
+    }
+  },
+  Dyscalculia:{
+    color:'#00e676', bg:['#001a0e','#003d22','#00180c'],
+    moods:{
+      Focus:        {color:'#69f0ae',icon:'🧠',bg:['#001a0e','#003c20','#00180c']},
+      Motivation:   {color:'#b9f6ca',icon:'💪',bg:['#001a12','#003d28','#001810']},
+      Relax:        {color:'#a5d6a7',icon:'🍃',bg:['#001608','#00381a','#001408']}
+    }
+  }
+};
+
+// ════════════════════════════════════════════════
+//  musicDB — each section now holds multiple named tracks
+//  Structure: condition > mood > section > { "Track Name": {vid, list?}, ... }
+// ════════════════════════════════════════════════
+const musicDB={
+  ADHD:{
+    Focus:{
+      "Neuro Beats":{
+        "Alpha Focus 1":       {vid:"0GDfOAuUvQ0"},
+        "Alpha Focus 2":       {vid:"zXBTKDpPlu8"},
+        "Alpha Focus 3":       {vid:"jhvmvFQiLqY"},
+        "Alpha Focus 4":       {vid:"fZCthK3DB9U"},
+        "Alpha Focus 5":       {vid:"CMnIsnINckU"},
+        "Alpha Focus 6":       {vid:"n0SpKMnkPec"},
+        "Alpha Focus 7":       {vid:"aGne2McoX6M"},
+        "Alpha Focus 8":       {vid:"divvWBs0XX8"},
+        "Alpha Focus 9":       {vid:"SRvu2mMWPz0"},
+        "Alpha Focus 10":       {vid:"nAReIJImpwY"}
+      },
+      "Calm Melodies":{
+        "Coding Lofi 1":       {vid:"1aO7_UTMlgU"},
+        "Coding Lofi 2":       {vid:"NFNfs_NgZoE"},
+        "Coding Lofi 3":       {vid:"Tp9QHwjGieY"},
+        "Coding Lofi 4":       {vid:"MyS1ub5EOTI"}, 
+        "Coding Lofi 5":       {vid:"fzDqfdmvw2o"},
+        "Coding Lofi 6":       {vid:"zI5tvAxRg20"},
+        "Coding Lofi 7":       {vid:"DzF7KQUaUTs"},
+        "Coding Lofi 8":       {vid:"0JZeeqztaBg"}
+      },
+      "Nature Vibes":{
+        "Rain Focus 1":        {vid:"n_nPlAeowFg"},
+        "Rain Focus 2":        {vid:"arwKWecNiKA"},
+        "Rain Focus 3":        {vid:"4kicIp82w0s"},
+        "Rain Focus 4":        {vid:"HEia_qTLRSM"},
+        "Rain Focus 5":        {vid:"9JwgW_S4wlk"},
+        "Rain Focus 6":        {vid:"e-aVkNqo3QM"},
+        "Rain Focus 7":        {vid:"WsZ5gWX4YM0"}
+      }
+    },
+    Motivation:{
+      "Neuro Beats":{
+        "Productivity Boost 1":{vid:"REMnH6A2OIA"},
+        "Productivity Boost 2":{vid:"1J4a9cT2lkw"},
+        "Productivity Boost 3":{vid:"wbEfnFwCDJo"},
+        "Productivity Boost 4":{vid:"GrgK9Mv9vIU"},
+        "Productivity Boost 5":{vid:"nuder20MFPg"},
+        "Productivity Boost 6":{vid:"IdIn5sqDV-0"},
+      },
+      "Motivational Stories":{
+        "ADHD Success 1":      {vid:"kQjtK32mGJQ"},
+        "ADHD Success 2":      {vid:"VkUi4qdZStQ"},
+        "ADHD Success 3":      {vid:"LOMbySJTKpg"},
+        "ADHD Success 4":      {vid:"5L4DQfVIcdg"},
+        "ADHD Success 5":      {vid:"rCi5YetnOvw"},
+        "ADHD Success 6":      {vid:"HisYsqqszq0"},
+        "ADHD Success 7":      {vid:"3foQJhdI4dY"},
+        "ADHD Success 8":      {vid:"gz6UI42E-7g"}
+      }
+    },
+    "Low Energy":{
+      "Neuro Beats":{
+        "Energy Boost 1":      {vid:"Eg2FoLybFp4"},
+        "Energy Boost 2":      {vid:"8AyUzCkWP6s"},
+        "Energy Boost 3":      {vid:"-VjOjBLpMws"},
+        "Energy Boost 4":      {vid:"mDAO8zUSJiM"},
+        "Energy Boost 5":      {vid:"n61ULEU7CO0"},
+        "Energy Boost 6":      {vid:"CLeZyIID9Bo"},
+        "Energy Boost 7":      {vid:"INMWDBgfGBM"}
+      },
+      "Calm Melodies":{
+        "Soft Piano 1":        {vid:"8jeQvjo1928"},
+        "Soft Piano 2":        {vid:"wxwfHs3nM5g"},
+        "Soft Piano 3":        {vid:"UkeMMOcZbBk"},
+        "Soft Piano 4":        {vid:"zI5tvAxRg20"},
+        "Soft Piano 5":        {vid:"Rh4rnYQU6yc"},
+        "Soft Piano 6":        {vid:"utXLhW7zgTI"},
+        "Soft Piano 7":        {vid:"GW-_9KeZRf0"}
+      },
+      "Nature Vibes":{
+        "Ocean Waves 1":       {vid:"cjkFG6bHGNc"},
+        "Ocean Waves 2":       {vid:"YSba5S1iJRk"},
+        "Ocean Waves 3":       {vid:"n_nPlAeowFg"},
+        "Ocean Waves 4":       {vid:"sAZWF8AoQoo"},
+        "Ocean Waves 5":       {vid:"AvJaCOa500w"},
+        "Ocean Waves 6":       {vid:"JbJ0sYt9Nyk"},
+        "Ocean Waves 7":       {vid:"ZHWUdzggTiw"}
+        
+      }
+    }
+  },
+  Autism:{
+    Relax:{
+      "Calm Melodies":{
+        "Calm Piano 1":        {vid:"VuT5gVBGxpI"},
+        "Calm Piano 2":        {vid:"ujyu7tkyxtw"},
+        "Calm Piano 3":        {vid:"JiMF_RgrOpc"},
+        "Calm Piano 4":        {vid:"Iu_rFsUvHiA"},
+        "Calm Piano 5":        {vid:"DoCTngG1uI4"},
+        "Calm Piano 6":        {vid:"u4aYW10nxYU"}
+      },
+      "Nature Vibes":{
+        "Forest Calm 1":       {vid:"yw1Du5rl3Bg"},
+        "Forest Calm 2":       {vid:"0dcFWLV_OlI"},
+        "Forest Calm 3":       {vid:"Wqx06DtYIZs"},
+        "Forest Calm 4":       {vid:"IvjMgVS6kng"},
+        "Forest Calm 5":       {vid:"L7N2VSBRq8g"},
+        "Forest Calm 6":       {vid:"OYFjr3n2E6s"}
+      }
+    },
+    "Low Energy":{
+      "Neuro Beats":{
+        "Sleep Frequency 1":   {vid:"RTTM_94glfY"},
+        "Sleep Frequency 2":   {vid:"jVPxEk5_bBQ"},
+        "Sleep Frequency 3":   {vid:"KlrnObUjA1U"},
+        "Sleep Frequency 4":   {vid:"3AsitihbVjU"},
+        "Sleep Frequency 5":   {vid:"1GCrpXs-AvI"},
+        "Sleep Frequency 6":   {vid:"zDa-IRreb1o"},
+        "Sleep Frequency 7":   {vid:"5VI78Q27RaI"}
+      },
+      "Calm Melodies":{
+        "Night Piano 1":       {vid:"qYnA9wWFHLI"},
+        "Night Piano 2":       {vid:"vxHVbzixHHI"},
+        "Night piano 3":       {vid:"qPpUGlrHIto"}
+      },
+      "Nature Vibes":{
+        "Ocean Sleep 1":       {vid:"hw32XIVdHCU"},
+        "Ocean Sleep 2":       {vid:"nBD-4ZDWJr8"},
+        "Ocean Sleep 3":       {vid:"ghvLSUXD5pU"},
+        "Ocean Sleep 4":       {vid:"1t7g690boao"}
+      }
+    },
+    Focus:{
+      "Neuro Beats":{
+        "Focus Frequency 1":   {vid:"pm3mXl4Duj0"},
+        "Focus Frequency 2":   {vid:"lTRiuFIWV54"},
+        "Focus Frequency 3":   {vid:"6H-PLF2CR18"}
+      },
+      "Calm Melodies":{
+        "Soft Instrumental 1": {vid:"rBadprLH1jM"},
+        "Soft Instrumental 2": {vid:"CYzbsfn71rk"},
+        "Soft Instrumental 3": {vid:"cYPJaHT5f3E"}
+      },
+      "Nature Vibes":{
+        "Rain Study 1":        {vid:"KudA5N46r9E"},
+        "Rain Study 2":        {vid:"CHCbRz7wFjE"},
+        "Rain Study 3":        {vid:"UNSKJC2yv6I"}
+      }
+    }
+  },
+  Dyslexia:{
+    Focus:{
+      "Neuro Beats":{
+        "Clarity Mind 1":      {vid:"QVVVJLl4F58"},
+        "Clarity Mind 2":      {vid:"i43tkaTXtwI"},
+        "Clarity Mind 3":      {vid:"aowqrfVob9M"},
+        "Clarity Mind 4":      {vid:"cIZhlFIyJ_Y"}
+
+      },
+      "Calm Melodies":{
+        "Focus Instrumental 1":{vid:"0DIMOlGxWNs"},
+        "Focus Instrumental 2":{vid:"CU3ljg1JJhg"},
+        "Focus Instrumental 3":{vid:"E42TfodDzUk"},
+        "Focus Instrumental 4":{vid:"E5zroU6vuuo"},
+      },
+      "Nature Vibes":{
+        "Study Rain 1":        {vid:"KudA5N46r9E"},
+        "Study Rain 2":        {vid:"62tcejSmcmI"},
+        "Study Rain 3":        {vid:"Se5NjX-cM5I"},
+        "Study Rain 4":        {vid:"Xv2NElOHo-0"},
+      }
+    },
+    Relax:{
+      "Neuro Beats":{
+        "Calm Brain 1":        {vid:"9GaBMZRHM3U"},
+        "Calm Brain 2":        {vid:"u9fRJ3yN18Y"},
+        "Calm Brain 3":        {vid:"S__LgIaleQg"},
+        "Calm Brain 4":        {vid:"8EM7btM7-XQ"}
+      },
+      "Calm Melodies":{
+        "Relax Piano 1":       {vid:"3NycM9lYdRI"},
+        "Relax Piano 2":       {vid:"2OEL4P1Rz04"},
+        "Relax Piano 3":       {vid:"_C6QKEzDlGg"}
+      },
+      "Nature Vibes":{
+        "Forest Relax 1":      {vid:"FxAgAyZYXJ8"},
+        "Forest Relax 2":      {vid:"HWgOhngBGZo"},
+        "Forest Relax 3":      {vid:"UJZxtO9XNno"}
+      }
+    },
+    Motivation:{
+      "Neuro Beats":{
+        "Motivation Boost 1":  {vid:"amfWIRasxtI"},
+        "Motivation Boost 2":  {vid:"awi74O_6VHk"},
+        "Motivation Boost 3":  {vid:"e_c3DJhPNgA"}
+      },
+      "Motivational Stories":{
+        "Dyslexia Success 1":  {vid:"domCDwp5u3I"},
+        "Dyslexia Success 2":  {vid:"BhTa8pdl-s8"},
+        "Dyslexia Success 3":  {vid:"b1b2rHhFajE"}
+      }
+    }
+  },
+  Dyscalculia:{
+    Focus:{
+      "Neuro Beats":{
+        "Math Focus 1":        {vid:"-CSN7OMChpU"},
+        "Math Focus 2":        {vid:"opk2ABcjioc"},
+        "Math Focus 3":        {vid:"aPZrYDpOlU4 "}
+      },
+      "Calm Melodies":{
+        "Deep Focus Piano 1":  {vid:"YxfnUPqWV0k"},
+        "Deep Focus Piano 2":  {vid:"cAINPdigUvM"},
+        "Deep Focus Piano 3":  {vid:"hJ47yWeWBIg"}
+      },
+      "Nature Vibes":{
+        "Rain Concentration 1":{vid:"Jvgx5HHJ0qw"},
+        "Rain Concentration 2":{vid:"GovZkJbxe7g"},
+        "Rain Concentration 3":{vid:"RKxuZZ_6Vs8"}
+      }
+    },
+    Motivation:{
+      "Neuro Beats":{
+        "Confidence Boost 1":  {vid:"Bh_QhurLUwU"},
+        "Confidence Boost 2":  {vid:"Bon06VhRLuw"},
+        "Confidence Boost 3":  {vid:"YWIhyOWxKPw"}
+      },
+      "Motivational Stories":{
+        "Motivational story 1":   {vid:"sVUiCblDvNA"},
+        "Motivational story 2":   {vid:"3XA0bB79oGc"},
+        "Motivational story3":   {vid:"MNH8TI5ecEY"}
+      }
+    },
+    Relax:{
+      "Neuro Beats":{
+        "Relax Mind 1":        {vid:"NvftPSb5Xtw"},
+        "Relax Mind 2":        {vid:"1Waq8ohWbV4"},
+        "Relax Mind 3":        {vid:"lWKdE1XJvIc"}
+      },
+      "Calm Melodies":{
+        "Soft Piano 1":        {vid:"6GVgncA9oiw"},
+        "Soft Piano 2":        {vid:"sJx_BqzbAEc"},
+        "Soft Piano 3":        {vid:"2bCsz7QWbQE"}
+      },
+      "Nature Vibes":{
+        "Ocean Relax 1":       {vid:"EHklxmBvzwc"},
+        "Ocean Relax 2":       {vid:"_M-joHQkBS0"},
+        "Ocean Relax 3":       {vid:"dR_3g5WCdHs"}
+      }
+    }
+  }
+};
+
+
+// ════ STATE ════
+let condition=null,mood=null,currentEntry=null;
+let running=false,paused=false,timerInterval=null,total=0,rem=0;
+const CIRC=2*Math.PI*90;
+
+// ════ HELPERS ════
+function cv(n,v){document.documentElement.style.setProperty(n,v);}
+
+function applyCondColor(name){
+  const C=THEME[name];
+  cv('--cc',C.color); cv('--bg1',C.bg[0]); cv('--bg2',C.bg[1]); cv('--bg3',C.bg[2]);
+  document.getElementById('rg0').setAttribute('stop-color',C.color);
+  document.getElementById('rg1').setAttribute('stop-color',C.color);
+  document.querySelectorAll('.card-label-dot').forEach(d=>{d.style.background=C.color;d.style.boxShadow=`0 0 10px ${C.color}`;});
+  const sb=document.querySelector('.btn-start');
+  sb.style.background=`linear-gradient(135deg,${C.color},${C.color}bb)`;
+  sb.style.boxShadow=`0 4px 20px ${C.color}55`;
+  document.getElementById('condBadge').style.setProperty('--bc',C.color);
+}
+
+function applyMoodColor(cname,mname){
+  const M=THEME[cname].moods[mname];
+  cv('--mc',M.color); cv('--bg1',M.bg[0]); cv('--bg2',M.bg[1]); cv('--bg3',M.bg[2]);
+  document.getElementById('rg1').setAttribute('stop-color',M.color);
+  const sb=document.querySelector('.btn-start');
+  sb.style.background=`linear-gradient(135deg,${THEME[cname].color},${M.color})`;
+  document.getElementById('moodBadge').style.setProperty('--bc',M.color);
+}
+
+// ════ CONDITION ════
+function setCondition(name,btn){
+  condition=name; mood=null;
+  document.querySelectorAll('.cond-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyCondColor(name);
+  document.getElementById('condBadgeTxt').textContent='⚡ '+name;
+  document.getElementById('condBadgeWrap').classList.remove('hidden');
+  const grid=document.getElementById('moodGrid');
+  grid.innerHTML='';
+  Object.entries(THEME[name].moods).forEach(([mname,mdata])=>{
+    const b=document.createElement('button');
+    b.className='mood-btn'; b.style.setProperty('--m',mdata.color);
+    b.innerHTML=`<span class="mood-icon">${mdata.icon}</span><span class="mood-name">${mname}</span>`;
+    b.onclick=()=>setMood(mname,b);
+    grid.appendChild(b);
+  });
+  document.getElementById('moodCard').classList.remove('hidden');
+  document.getElementById('moodBadgeWrap').classList.add('hidden');
+  document.getElementById('musicCard').classList.add('hidden');
+  iframeEl=null; queue=[]; queueIdx=0; stopStatePoller(); _lastState=-1;
+}
+
+// ════ MOOD ════
+function setMood(name,btn){
+  mood=name;
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyMoodColor(condition,name);
+  document.getElementById('moodBadgeTxt').textContent=THEME[condition].moods[name].icon+' '+name;
+  document.getElementById('moodBadgeWrap').classList.remove('hidden');
+  const db=musicDB[condition][mood];
+  const ss=document.getElementById('sectionSelect');
+  ss.innerHTML='';
+  Object.keys(db).forEach(s=>ss.innerHTML+=`<option>${s}</option>`);
+  document.getElementById('musicCard').classList.remove('hidden');
+  loadTracks();
+}
+
+// ════ QUEUE STATE ════
+let queue = [];        // flat list of all {name, entry} in current section
+let queueIdx = 0;      // which track is currently playing
+let iframeEl = null;
+
+// ════ MUSIC ════
+function loadTracks(){
+  const sec = document.getElementById('sectionSelect').value;
+  const ts  = document.getElementById('trackSelect');
+  ts.innerHTML = '';
+  Object.keys(musicDB[condition][mood][sec]).forEach(t => ts.innerHTML += `<option>${t}</option>`);
+  buildQueue();
+  updatePlayer();
+}
+
+function queueVideo(){ buildQueue(); updatePlayer(); }
+
+// Build a flat queue from the entire section (all tracks in order)
+function buildQueue(){
+  const sec = document.getElementById('sectionSelect').value;
+  const trk = document.getElementById('trackSelect').value;
+  const sectionTracks = musicDB[condition][mood][sec];
+  queue = Object.entries(sectionTracks).map(([name, entry]) => ({name, entry}));
+  // Set queueIdx to selected track
+  queueIdx = queue.findIndex(t => t.name === trk);
+  if(queueIdx < 0) queueIdx = 0;
+}
+
+function updatePlayer(){
+  if(!queue.length) return;
+  currentEntry = queue[queueIdx].entry;
+  // Sync dropdown to current track
+  document.getElementById('trackSelect').value = queue[queueIdx].name;
+  iframeEl = null;
+  renderThumb();
+  document.getElementById('playerWrap').style.display = 'block';
+}
+
+function playNext(){
+  if(!queue.length) return;
+  stopStatePoller();
+  queueIdx = (queueIdx + 1) % queue.length;
+  currentEntry = queue[queueIdx].entry;
+  document.getElementById('trackSelect').value = queue[queueIdx].name;
+  // Auto-embed and play next track immediately
+  embedPlayer(true);
+  // Show "now playing" toast
+  showToast('▶ ' + queue[queueIdx].name);
+}
+
+function showToast(msg){
+  let t = document.getElementById('queueToast');
+  if(!t){ t = document.createElement('div'); t.id='queueToast'; t.style.cssText=`position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(20,16,50,0.92);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(16px);color:#fff;font-family:var(--fS);font-size:12px;letter-spacing:1.5px;padding:12px 28px;border-radius:40px;z-index:999;opacity:0;transition:all 0.4s ease;pointer-events:none;`; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; }, 3000);
+}
+
+// ── YouTube state detection via postMessage (onStateChange = most reliable) ──
+let _lastState = -1;
+let _statePoller = null;
+
+window.addEventListener('message', e => {
+  try {
+    const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+    if(!data) return;
+
+    // Method 1: onStateChange event (fires when YT player state changes)
+    if(data.event === 'onStateChange' && data.info === 0){
+      _onVideoEnded();
+      return;
+    }
+
+    // Method 2: infoDelivery — catch playerState transitions to 0 (ended)
+    if(data.event === 'infoDelivery' && data.info){
+      const st = data.info.playerState;
+      if(typeof st === 'number' && st === 0 && _lastState !== 0){
+        _onVideoEnded();
+      }
+      if(typeof st === 'number') _lastState = st;
+    }
+  } catch(_){}
+});
+
+let _endedGuard = false;
+function _onVideoEnded(){
+  if(_endedGuard) return;   // prevent double-fire
+  _endedGuard = true;
+  setTimeout(()=>{ _endedGuard = false; }, 2000);
+  playNext();
+}
+
+// Method 3: Polling fallback — check every 2 s if iframe has gone idle
+// (catches cases where postMessage is blocked by browser)
+function startStatePoller(){
+  stopStatePoller();
+  _lastState = -1;
+  _statePoller = setInterval(()=>{
+    if(!iframeEl) return;
+    try {
+      iframeEl.contentWindow.postMessage(
+        JSON.stringify({event:'listening', id:1}), '*'
+      );
+      iframeEl.contentWindow.postMessage(
+        JSON.stringify({event:'command', func:'getPlayerState', args:'', id:1}), '*'
+      );
+    } catch(_){}
+  }, 2000);
+}
+function stopStatePoller(){
+  if(_statePoller){ clearInterval(_statePoller); _statePoller = null; }
+}
+
+function ytUrl(e){ return e.list ? `https://www.youtube.com/playlist?list=${e.list}` : `https://www.youtube.com/watch?v=${e.vid}`; }
+
+function renderThumb(){
+  if(!currentEntry) return;
+  const hasVid = currentEntry.vid && currentEntry.vid.trim() !== '';
+  const thumb  = hasVid ? `https://img.youtube.com/vi/${currentEntry.vid}/hqdefault.jpg` : `https://via.placeholder.com/640x360/1a1a2e/fff?text=Click+to+Play+Playlist`;
+  const mc  = THEME[condition]?.moods[mood]?.color || '#fff';
+  const trk = queue[queueIdx]?.name || document.getElementById('trackSelect').value;
+  const nextTrk = queue[(queueIdx+1) % queue.length]?.name || '';
+  document.getElementById('ytCard').innerHTML=`
+    <div class="yt-thumb" onclick="embedPlayer(true)">
+      <img src="${thumb}" alt="thumb" onerror="this.src='https://via.placeholder.com/640x360/111/fff?text=Click+to+Play'">
+      <div class="yt-play-btn"><div class="play-circle"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+    </div>
+    <div class="yt-info">
+      <div class="yt-info-top">
+        <div class="yt-title-wrap">
+          <span class="yt-now">Now selected</span>
+          <span class="yt-title"><span class="yt-dot" style="background:${mc};box-shadow:0 0 7px ${mc}"></span>${trk}</span>
+        </div>
+        <a class="yt-open-btn" href="${ytUrl(currentEntry)}" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>YouTube
+        </a>
+      </div>
+      <div class="yt-note">▶ Click thumbnail · Auto-plays next track when done${nextTrk ? ' · Up next: '+nextTrk : ''}</div>
+    </div>`;
+}
+
+function getEmbedSrc(entry, autoplay){
+  const ap = autoplay ? 1 : 0;
+  const hasVid  = entry.vid  && entry.vid.trim()  !== '';
+  const hasList = entry.list && entry.list.trim() !== '';
+  // enablejsapi=1 + origin required for postMessage; widget_referrer helps permissions
+  const base = `&autoplay=${ap}&controls=1&rel=0&enablejsapi=1&playsinline=1`;
+  if(hasVid && hasList) return `https://www.youtube.com/embed/${entry.vid}?list=${entry.list}${base}`;
+  if(hasList && !hasVid) return `https://www.youtube.com/embed/videoseries?list=${entry.list}${base}`;
+  return `https://www.youtube.com/embed/${entry.vid}?${base}`;
+}
+
+function embedPlayer(autoplay){
+  if(!currentEntry) return;
+  if(autoplay === undefined) autoplay = running && !paused;
+  const mc  = THEME[condition]?.moods[mood]?.color || '#fff';
+  const trk = queue[queueIdx]?.name || document.getElementById('trackSelect').value;
+  const nextTrk = queue[(queueIdx+1) % queue.length]?.name || '';
+  const src = getEmbedSrc(currentEntry, autoplay);
+  const card = document.getElementById('ytCard');
+  _lastState = -1;
+  card.innerHTML = `
+    <div class="yt-iframe-wrap">
+      <iframe id="ytIframe" src="${src}"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen style="width:100%;height:100%;border:none;display:block"></iframe>
+    </div>
+    <div class="yt-info">
+      <div class="yt-info-top">
+        <div class="yt-title-wrap">
+          <span class="yt-now">▶ Now playing</span>
+          <span class="yt-title"><span class="yt-dot" style="background:${mc};box-shadow:0 0 7px ${mc}"></span>${trk}</span>
+        </div>
+        <a class="yt-open-btn" href="${ytUrl(currentEntry)}" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>YouTube
+        </a>
+      </div>
+      ${nextTrk ? `<div class="yt-note">Up next: ${nextTrk} &nbsp;·&nbsp; Auto-queue on 🔁</div>` : ''}
+    </div>`;
+  iframeEl = document.getElementById('ytIframe');
+
+  // After iframe loads, subscribe to YouTube player events via postMessage
+  iframeEl.addEventListener('load', () => {
+    // Tell YouTube we want to receive events
+    setTimeout(() => {
+      try {
+        iframeEl.contentWindow.postMessage(
+          JSON.stringify({ event: 'listening', id: 1 }), '*'
+        );
+      } catch(_){}
+    }, 500);
+    startStatePoller();
+  });
+}
+
+function ytPostMsg(action){
+  if(!iframeEl) return;
+  iframeEl.contentWindow.postMessage(
+    JSON.stringify({event:'command', func: action, args:''}),
+    '*'
+  );
+}
+
+// ════ TIMER ════
+function startTimer(){
+  total = parseInt(document.getElementById('minutesInput').value)*60;
+  rem = total; running = true; paused = false;
+  clearInterval(timerInterval); timerInterval = setInterval(tick, 1000);
+  setStatus('running');
+  document.getElementById('btnPause').disabled = false;
+  document.getElementById('btnResume').disabled = true;
+  if(!iframeEl) embedPlayer();
+  else ytPostMsg('playVideo');
+}
+
+function pauseTimer(){
+  if(!running||paused) return;
+  paused = true; setStatus('paused');
+  document.getElementById('btnPause').disabled = true;
+  document.getElementById('btnResume').disabled = false;
+  ytPostMsg('pauseVideo');
+}
+
+function resumeTimer(){
+  if(!running||!paused) return;
+  paused = false; setStatus('running');
+  document.getElementById('btnPause').disabled = false;
+  document.getElementById('btnResume').disabled = true;
+  ytPostMsg('playVideo');
+}
+
+function tick(){
+  if(paused) return;
+  if(rem<=0){
+    clearInterval(timerInterval); running=false;
+    setRing(0); setStatus('done');
+    document.getElementById('ringNum').textContent='🎉';
+    document.getElementById('btnPause').disabled=true;
+    document.getElementById('btnResume').disabled=true;
+    ytPostMsg('pauseVideo'); return;
+  }
+  rem--;
+  const m=String(Math.floor(rem/60)).padStart(2,'0'), s=String(rem%60).padStart(2,'0');
+  document.getElementById('ringNum').textContent=m+':'+s;
+  setRing(rem/total);
+}
+function setRing(r){
+  document.getElementById('ringFill').style.strokeDashoffset=CIRC*(1-r);
+  document.getElementById('ringFill').style.strokeDasharray=CIRC;
+}
+function setStatus(s){
+  const m={running:'▶ Studying...',paused:'⏸ Paused',done:"✓ Time's Up — take a break!"};
+  document.getElementById('statusPill').textContent=m[s]||'Not started';
+}
+document.getElementById('ringFill').style.strokeDasharray=CIRC;
+document.getElementById('ringFill').style.strokeDashoffset=CIRC;
+</script>
+</body>
+</html>
